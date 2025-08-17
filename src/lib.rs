@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::ffi::c_void;
 
 use engage::{
@@ -33,7 +34,12 @@ pub enum SystemEvent {
     LanguageChanged,
     SaveLoaded { ty: i32, slot_id: i32 },
     // 0.3.0
-    ProcInstJump { proc: &'static ProcInst, label: i32 }
+    ProcInstJump { proc: &'static ProcInst, label: i32 },
+    // 0.4.0
+    ProcInstBind {
+        proc: RefCell<&'static mut ProcInst>,
+        parent: RefCell<Option<&'static mut ProcInst>>,
+    },
 }
 
 // Event system
