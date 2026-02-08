@@ -42,6 +42,13 @@ pub enum SystemEvent {
     },
 }
 
+#[repr(C)]
+pub struct CobApiVerison {
+    pub major: u64,
+    pub minor: u64,
+    pub patch: u64,
+}
+
 // Event system
 pub type SystemEventHandler = extern "C" fn(&Event<SystemEvent>);
 pub type GlobalConfigMenuItemRegistrationCallback = extern "C" fn() -> &'static mut ConfigBasicMenuItem;
@@ -54,6 +61,8 @@ extern "C" {
     fn cobapi_register_system_event_listener(callback: SystemEventHandler);
     fn cobapi_unregister_system_event_listener(callback: SystemEventHandler);
     fn cobapi_register_global_configmenuitem_cb(callback: GlobalConfigMenuItemRegistrationCallback);
+    // 0.4.0
+    fn cobapi_cobalt_version() -> CobApiVerison;
 }
 
 // 0.1.0
@@ -93,4 +102,9 @@ pub fn unregister_system_event_handler(callback: SystemEventHandler) {
 /// Expects a function returning an instance of ConfigBasicMenuItem to be appended to the list of settings.
 pub fn install_global_game_setting(callback: GlobalConfigMenuItemRegistrationCallback) {
     unsafe { cobapi_register_global_configmenuitem_cb(callback as _)}
+}
+
+/// Returns Cobalt's versioning as a struct.
+pub fn cobalt_version() -> CobApiVerison {
+    unsafe { cobapi_cobalt_version() }
 }
