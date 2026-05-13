@@ -1,11 +1,9 @@
 use std::cell::RefCell;
 use std::ffi::c_void;
 
-use engage::{
-    proc::ProcInst,
-    script::EventScript,
-    menu::config::ConfigBasicMenuItem,
-};
+use engage_il2cpp::app::eventscript::EventScript;
+use engage_il2cpp::app::procinst::ProcInst;
+use engage_il2cpp::root::configbasicmenuitem::ConfigBasicMenuItem;
 
 // 0.1.0
 
@@ -34,11 +32,11 @@ pub enum SystemEvent {
     LanguageChanged,
     SaveLoaded { ty: i32, slot_id: i32 },
     // 0.3.0
-    ProcInstJump { proc: &'static ProcInst, label: i32 },
+    ProcInstJump { proc: ProcInst, label: i32 },
     // 0.4.0
     ProcInstBind {
-        proc: RefCell<&'static mut ProcInst>,
-        parent: RefCell<Option<&'static mut ProcInst>>,
+        proc: RefCell<ProcInst>,
+        parent: RefCell<ProcInst>,
     },
 }
 

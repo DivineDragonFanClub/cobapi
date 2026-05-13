@@ -6,4 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-engage = { git = "https://github.com/DivineDragonFanClub/engage" }
+engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", default-features = false, features = [
+    "app-eventscript",
+    "app-procinst",
+    "root-configbasicmenuitem",
+    "system-collections-generic-dictionary_2",
+    "system-collections-generic-list_1",
+    "system-object",
+] }
