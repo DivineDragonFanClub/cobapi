@@ -1,9 +1,13 @@
+extern crate self as cobapi;
+
 use std::cell::RefCell;
 use std::ffi::c_void;
 
 use engage_il2cpp::app::eventscript::EventScript;
 use engage_il2cpp::app::procinst::ProcInst;
 use engage_il2cpp::root::configbasicmenuitem::ConfigBasicMenuItem;
+
+pub mod services;
 
 // 0.1.0
 
@@ -51,6 +55,38 @@ pub struct CobApiVerison {
 pub type SystemEventHandler = extern "C" fn(&Event<SystemEvent>);
 pub type GlobalConfigMenuItemRegistrationCallback = extern "C" fn() -> &'static mut ConfigBasicMenuItem;
 
+// 0.5.0 — typed-service registry
+
+#[repr(C)]
+pub struct VTableHeader {
+    pub abi_version: u32,
+    pub _reserved: u32,
+    pub method_count: u32,
+    pub _pad: u32,
+    pub methods: *const MethodEntry,
+    pub drop_fn: unsafe extern "C" fn(*mut c_void),
+}
+
+unsafe impl Sync for VTableHeader {}
+
+pub const VTABLE_ABI_VERSION: u32 = 1;
+
+#[repr(C)]
+pub struct MethodEntry {
+    pub name_hash: u64,
+    pub sig_hash: u64,
+    pub fn_ptr: *const c_void,
+}
+
+unsafe impl Sync for MethodEntry {}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RegisterServiceError {
+    AlreadyRegistered,
+    AbiVersionMismatch,
+}
+
 extern "C" {
     // 0.1.0
     fn cobapi_register_configmenuitem_cb(callback: *const c_void);
@@ -61,19 +97,34 @@ extern "C" {
     fn cobapi_register_global_configmenuitem_cb(callback: GlobalConfigMenuItemRegistrationCallback);
     // 0.4.0
     fn cobapi_cobalt_version() -> CobApiVerison;
+
+    // 0.5.0
+    fn cobapi_register_service(
+        id_ptr: *const u8,
+        id_len: usize,
+        this: *mut c_void,
+        vtable: *const VTableHeader,
+    ) -> i32;
+    fn cobapi_lookup_service(
+        id_ptr: *const u8,
+        id_len: usize,
+        out_this: *mut *mut c_void,
+        out_vtable: *mut *const VTableHeader,
+    ) -> i32;
+    fn cobapi_unregister_service(id_ptr: *const u8, id_len: usize);
 }
 
 // 0.1.0
 
 /// Install a new setting in the "Plugin Settings" sub-menu during gameplay.
-/// 
+///
 /// Expects a function returning an instance of ConfigBasicMenuItem to be appended to the list of settings.
 pub fn install_game_setting(callback: GameSettingRegistrationCallback) {
-    unsafe { cobapi_register_configmenuitem_cb(callback as _)}
+    unsafe { cobapi_register_configmenuitem_cb(callback as _) }
 }
 
 /// Install a new command registerer for lua scripts.
-/// 
+///
 /// The callback will be provided with the EventScript used by the game to add handlers.
 /// Note that both the game and Cobalt's commands are already installed by the time your callback is called.
 pub fn install_lua_command_registerer(callback: EventScriptRegistrationCallback) {
@@ -83,7 +134,7 @@ pub fn install_lua_command_registerer(callback: EventScriptRegistrationCallback)
 // 0.2.0
 
 /// Register a event handler for System events.
-/// 
+///
 /// The callback will be provided with every Event in the System category.
 /// Match on the ones you want to listen to.
 pub fn register_system_event_handler(callback: SystemEventHandler) {
@@ -96,13 +147,53 @@ pub fn unregister_system_event_handler(callback: SystemEventHandler) {
 }
 
 /// Install a new global setting in the "Plugin Settings" sub-menu in the Cobalt settings menu.
-/// 
+///
 /// Expects a function returning an instance of ConfigBasicMenuItem to be appended to the list of settings.
 pub fn install_global_game_setting(callback: GlobalConfigMenuItemRegistrationCallback) {
-    unsafe { cobapi_register_global_configmenuitem_cb(callback as _)}
+    unsafe { cobapi_register_global_configmenuitem_cb(callback as _) }
 }
 
 /// Returns Cobalt's versioning as a struct.
 pub fn cobalt_version() -> CobApiVerison {
     unsafe { cobapi_cobalt_version() }
 }
+
+// 0.5.0
+
+pub fn register_service(
+    id: &str,
+    this: *mut c_void,
+    vtable: &'static VTableHeader,
+) -> Result<(), RegisterServiceError> {
+    let rc = unsafe {
+        cobapi_register_service(id.as_ptr(), id.len(), this, vtable as *const VTableHeader)
+    };
+
+    match rc {
+        0 => Ok(()),
+        1 => Err(RegisterServiceError::AlreadyRegistered),
+        2 => Err(RegisterServiceError::AbiVersionMismatch),
+        _ => Err(RegisterServiceError::AlreadyRegistered),
+    }
+}
+
+pub fn lookup_service(id: &str) -> Option<(*mut c_void, *const VTableHeader)> {
+    let mut this: *mut c_void = core::ptr::null_mut();
+    let mut vtable: *const VTableHeader = core::ptr::null();
+
+    let rc = unsafe {
+        cobapi_lookup_service(id.as_ptr(), id.len(), &mut this, &mut vtable)
+    };
+
+    if rc == 0 {
+        Some((this, vtable))
+    } else {
+        None
+    }
+}
+
+pub fn unregister_service(id: &str) {
+    unsafe { cobapi_unregister_service(id.as_ptr(), id.len()) }
+}
+
+pub use cobapi_macros::service;

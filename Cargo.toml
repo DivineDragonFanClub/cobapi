@@ -1,11 +1,10 @@
 [package]
 name = "cobapi"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+cobapi-macros = { path = "cobapi-macros" }
 engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", default-features = false, features = [
     "app-eventscript",
     "app-procinst",
