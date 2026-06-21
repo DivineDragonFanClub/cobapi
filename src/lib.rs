@@ -7,6 +7,7 @@ use engage_il2cpp::app::eventscript::EventScript;
 use engage_il2cpp::app::procinst::ProcInst;
 use engage_il2cpp::root::configbasicmenuitem::ConfigBasicMenuItem;
 
+pub mod injection;
 pub mod services;
 
 // 0.1.0
@@ -81,9 +82,11 @@ pub struct MethodEntry {
 unsafe impl Sync for MethodEntry {}
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
 pub enum RegisterServiceError {
+    #[error("a service with this id is already registered")]
     AlreadyRegistered,
+    #[error("service vtable ABI version mismatch")]
     AbiVersionMismatch,
 }
 

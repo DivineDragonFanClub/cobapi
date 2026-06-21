@@ -1,10 +1,12 @@
 [package]
 name = "cobapi"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 
 [dependencies]
 cobapi-macros = { path = "cobapi-macros" }
+thiserror = "1"
+unity2 = { git = "https://github.com/DivineDragonFanClub/unity2" }
 engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", default-features = false, features = [
     "app-eventscript",
     "app-procinst",
