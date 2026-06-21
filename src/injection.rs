@@ -17,6 +17,14 @@ extern "C" {
 }
 
 pub fn register<T: InjectedClass>() -> Result<Class, RegisterClassError> {
+    let v = crate::cobalt_version();
+    if (v.major, v.minor, v.patch) < (1, 30, 0) {
+        panic!(
+            "This plugin needs Cobalt 1.30.0 or newer for class injection, but found {}.{}.{}. Please update Cobalt.",
+            v.major, v.minor, v.patch
+        );
+    }
+
     let class = build::<T>();
 
     let code = unsafe { cobapi_register_injected_class(class.raw_mut()) };
