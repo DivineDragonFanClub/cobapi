@@ -2,6 +2,9 @@
 name = "cobapi-macros"
 version = "0.1.0"
 edition = "2021"
+license = "MPL-2.0"
+repository = "https://github.com/DivineDragonFanClub/cobapi"
+description = "Proc macros for the cobapi crate."
 
 [lib]
 proc-macro = true

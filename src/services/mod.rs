@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 
-use engage_il2cpp::app::procinst::ProcInst;
+use engage::app::procinst::ProcInst;
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]

@@ -3,9 +3,9 @@ extern crate self as cobapi;
 use std::cell::RefCell;
 use std::ffi::c_void;
 
-use engage_il2cpp::app::eventscript::EventScript;
-use engage_il2cpp::app::procinst::ProcInst;
-use engage_il2cpp::root::configbasicmenuitem::ConfigBasicMenuItem;
+use engage::app::eventscript::EventScript;
+use engage::app::procinst::ProcInst;
+use engage::root::configbasicmenuitem::ConfigBasicMenuItem;
 
 pub mod injection;
 pub mod services;

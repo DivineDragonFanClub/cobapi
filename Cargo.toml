@@ -1,13 +1,16 @@
 [package]
 name = "cobapi"
-version = "0.6.0"
+version = "0.1.0"
 edition = "2021"
+license = "MPL-2.0"
+repository = "https://github.com/DivineDragonFanClub/cobapi"
+description = "Plugin API for the Cobalt mod loader"
 
 [dependencies]
-cobapi-macros = { path = "cobapi-macros" }
+cobapi-macros = { version = "0.1.0", path = "cobapi-macros" }
 thiserror = "1"
-unity2 = { git = "https://github.com/DivineDragonFanClub/unity2" }
-engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", default-features = false, features = [
+unity-nx = { git = "https://github.com/DivineDragonFanClub/unity2", tag = "0.1.0" }
+engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", tag = "0.1.0", default-features = false, features = [
     "app-eventscript",
     "app-procinst",
     "root-configbasicmenuitem",

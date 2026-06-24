@@ -1,6 +1,6 @@
-use unity2::il2cpp::Il2CppClass;
-use unity2::injection::{build, InjectedClass};
-use unity2::Class;
+use unity::il2cpp::Il2CppClass;
+use unity::injection::{build, InjectedClass};
+use unity::Class;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
 pub enum RegisterClassError {
