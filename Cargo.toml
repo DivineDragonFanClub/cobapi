@@ -9,7 +9,7 @@ description = "Plugin API for the Cobalt mod loader"
 [dependencies]
 cobapi-macros = { version = "0.1.0", path = "cobapi-macros" }
 thiserror = "1"
-unity-nx = { git = "https://github.com/DivineDragonFanClub/unity2", tag = "0.1.0" }
+unity-nx = { git = "https://github.com/DivineDragonFanClub/unity-nx", tag = "0.1.0" }
 engage-il2cpp = { git = "https://github.com/DivineDragonFanClub/engage-il2cpp", tag = "0.1.0", default-features = false, features = [
     "app-eventscript",
     "app-procinst",
