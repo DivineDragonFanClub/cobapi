@@ -14,8 +14,7 @@ pub mod services;
 
 // Lua scripting
 pub type EventScriptRegistrationCallback = extern "C" fn(&EventScript);
-// Custom in-game settings
-pub type GameSettingRegistrationCallback = extern "C" fn() -> &'static mut ConfigBasicMenuItem;
+pub type GameSettingRegistrationCallback = extern "C" fn() -> ConfigBasicMenuItem;
 
 // 0.2.0
 
@@ -54,7 +53,7 @@ pub struct CobApiVerison {
 
 // Event system
 pub type SystemEventHandler = extern "C" fn(&Event<SystemEvent>);
-pub type GlobalConfigMenuItemRegistrationCallback = extern "C" fn() -> &'static mut ConfigBasicMenuItem;
+pub type GlobalConfigMenuItemRegistrationCallback = extern "C" fn() -> ConfigBasicMenuItem;
 
 // 0.5.0 — typed-service registry
 
