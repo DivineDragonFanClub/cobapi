@@ -13,7 +13,7 @@ pub mod services;
 // 0.1.0
 
 // Lua scripting
-pub type EventScriptRegistrationCallback = extern "C" fn(&EventScript);
+pub type EventScriptRegistrationCallback = extern "C" fn(EventScript);
 pub type GameSettingRegistrationCallback = extern "C" fn() -> ConfigBasicMenuItem;
 
 // 0.2.0
